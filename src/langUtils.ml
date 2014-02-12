@@ -44,3 +44,24 @@ function
   | [e]   -> e
   | e::es -> wrapExp (ELet (PVar "_", e, eSeq es))
 
+let tSimpleFun : typ -> typ -> typ =
+fun t1 t2 ->
+  TFun (PTyp t1, t2)
+
+let tSimpleUncurriedFun : typ list -> typ -> typ =
+fun tArgs tRet ->
+  TFun (PTupleTyp (List.map (fun tArg -> PTyp tArg) tArgs), tRet)
+
+let rec strTyp = function
+  | TInt             -> "int"
+  | TBool            -> "bool"
+  | TStr             -> "string"
+  | TNil             -> "XXX list"
+  | TConstraintVar x -> x
+  | TFun (pt, t)     -> spr "%s -> %s" (strTypPattern pt) (strTyp t)
+  (* | TFun (pt, t)     -> spr "(%s -> %s)" (strTypPattern pt) (strTyp t) *)
+
+and strTypPattern = function
+  | PTyp t      -> strTyp t
+  | PTupleTyp l -> spr "(%s)" (String.concat ", " (List.map strTypPattern l))
+

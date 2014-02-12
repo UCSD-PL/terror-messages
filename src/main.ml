@@ -1,6 +1,7 @@
 
 open Lexing
 
+let pr = Printf.printf
 let spr = Printf.sprintf
 
 let strPrefix s pre =
@@ -63,6 +64,8 @@ let _ =
     | _::_::_ -> failwith "too many command-line args"
     | [f]     -> begin
         let e = doParse LangParser.program f in
+        let t = Typing.tc e in
+        pr "- : %s\n" (LangUtils.strTyp t);
         ()
       end
 
