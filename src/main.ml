@@ -62,10 +62,5 @@ let _ =
   match List.tl (Array.to_list Sys.argv) with
     | []      -> ()
     | _::_::_ -> failwith "too many command-line args"
-    | [f]     -> begin
-        let e = doParse LangParser.program f in
-        let t = Typing.tc e in
-        pr "- : %s\n" (LangUtils.strTyp t);
-        ()
-      end
+    | [f]     -> Typing.tc f (doParse LangParser.program f)
 

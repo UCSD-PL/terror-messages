@@ -8,6 +8,11 @@ let digit    = ['0'-'9']
 let white    = [' ' '\t' '\r']
 let newline  = ['\n']
 
+let str =
+  (letter
+    | digit
+    | [' ' '+' '-' '*' '/' '=' '(' ')' '&' '|' '.' ',' '{' '}' ':' ';' '#'])*
+
 rule token = parse
 
   | eof         { EOF }
@@ -32,6 +37,7 @@ rule token = parse
   | "!="        { NE }
   | "&&"        { AND }
   | "||"        { OR }
+  | "()"        { UNIT }
   | "("         { LPAREN }
   | ")"         { RPAREN }
   | "["         { LBRACK }
@@ -40,9 +46,10 @@ rule token = parse
   | ","         { COMMA }
   | "::"        { DCOLON }
 
-  | digit+ as i                   { Num (int_of_string i) }
-  | letter (letter|digit)* as s   { Id s }
-  | "_"                           { Id "_" }
+  | digit+ as i                   { INT (int_of_string i) }
+  | letter (letter|digit)* as s   { ID s }
+  | "_"                           { ID "_" }
+  | '"' (str as s) '"'            { STR s}
 
   | white       { token lexbuf }
   | newline     { Lexing.new_line lexbuf; token lexbuf }

@@ -3,12 +3,13 @@ open Lang
 open LangUtils
 %}
 
-%token <int> Num
-%token <string> Id
+%token <int> INT
+%token <string> ID
+%token <string> STR
 %token TRUE FALSE EOF LET REC EQ IN FUN ARROW IF THEN ELSE
 %token PLUS MINUS MUL DIV LT LE NE AND OR EQEQ
 %token LPAREN RPAREN LBRACK RBRACK
-%token SEMI COMMA DCOLON
+%token SEMI COMMA DCOLON UNIT
 
 %start program
 %type <Lang.exp> program
@@ -75,15 +76,26 @@ exp2 :
 | e=exp1                     { e }
 
 exp1 :
-| i=Num                      { eInt ~pos:($startpos,$endpos) i }
+| i=INT                      { eInt ~pos:($startpos,$endpos) i }
+| s=STR                      { eStr ~pos:($startpos,$endpos) s }
 | TRUE                       { eBool ~pos:($startpos,$endpos) true }
 | FALSE                      { eBool ~pos:($startpos,$endpos) false }
-| x=Id                       { eVar ~pos:($startpos,$endpos) x }
-| LPAREN e=exp RPAREN        { e }
+| UNIT                       { eUnit ~pos:($startpos,$endpos) () }
+| x=ID                       { eVar ~pos:($startpos,$endpos) x }
+
+| LPAREN es=separated_list(COMMA,exp) RPAREN
+    { match es with
+        | []  -> Log.printParseErr "nothing between parens"
+        | [e] -> e
+        | _   -> eTuple ~pos:($startpos,$endpos) es }
 
 | LBRACK es=separated_list(SEMI,exp) RBRACK  { eList ~pos:($startpos,$endpos) es }
 
 pattern :
-| x=Id                                            { PVar x }
-| LPAREN ps=separated_list(COMMA,pattern) RPAREN  { PTuple ps }
+| x=ID  { pVar x }
+| LPAREN ps=separated_list(COMMA,pattern) RPAREN
+    { if List.length ps > 1 then PTuple ps
+      else Log.printParseErr (spr
+             "don't use tuple pattern for single variable: %s"
+             (LangUtils.strPattern (PTuple ps))) }
 

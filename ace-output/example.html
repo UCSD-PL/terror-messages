@@ -1,0 +1,63 @@
+<html lang="en" ng-app>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Source Code Annotations: Demo</title>
+    <style>
+      
+      #editor {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        font-size: 16px;
+/*
+        width: 800px;
+        height: 300px;
+*/
+      }
+
+    </style>
+    
+    <!-- Le styles -->
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="js/jquery/jquery-1.7.1.min.js"></script>
+    <script src="js/angular/angular.js"></script>
+    <script src="js/bootstrap/bootstrap.js"></script>
+
+  </head>
+
+<body data-spy="scroll" data-target=".bs-docs-sidebar" ng-controller="AnnotDemoCtrl">
+<!--
+  Enter name: <input type="text" ng-model="name"><br>
+  Hello <span ng-bind="name"></span>!
+  <pre ng-bind="annotValue"></pre>
+   
+  <div>
+     <span class="label large" id="sourceName">{{annotValue}}</span>
+     <span class="label large" id="sourceName">{{name}}</span>
+   </div> 
+
+  <br>
+-->
+
+  <div id="editor"></div>
+
+  <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script> 
+<!--
+  <script src="js/ace/theme-chaos.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ace/mode-haskell.js" type="text/javascript" charset="utf-8"></script>
+-->
+  <!-- TODO why is this needed in addition to call in js/annot.js ? -->
+  <script src="js/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/tooltip.js"></script> 
+  <script src="js/annot.js"></script> 
+
+  <!-- this sets the contents of the editor and the annotation table -->
+  <script src="display-file.js"></script>
+
+</body>
+
+</html>
